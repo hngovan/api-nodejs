@@ -1,25 +1,15 @@
-const express = require('express')
-const cors = require('cors')
-require('dotenv').config()
+const Sequelize = require('sequelize')
+const sequelize = new Sequelize('store', 'root', '123456789', {
+  host: 'localhost',
+  dialect: 'mysql',
+  logging: false
+})
 
-const app = express()
-
-app.use(
-  cors({
-    origin: process.env.CLIENT_URL,
-    methods: ['POST', 'GET', 'PUT', 'DELETE']
+sequelize
+  .authenticate()
+  .then(() => {
+    console.log('Connection has been established successfully.')
   })
-)
-
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
-
-app.use('/', (_req, res) => {
-  return res.send('SERVER ON SUCCESSFUL')
-})
-
-const PORT = process.env.PORT || 8888
-
-app.listen(PORT, () => {
-  console.log(`Server is running on PORT ${PORT}`)
-})
+  .catch(error => {
+    console.error('Unable to connect to the database: ', error)
+  })
